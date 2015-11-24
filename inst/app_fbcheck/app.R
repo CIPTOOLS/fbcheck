@@ -94,8 +94,8 @@ server = function(input, output) {
     out_temp[[j]] <- hot_col(hot = out_temp[[i]],col = fb_trait[i] ,readOnly = FALSE,
                                allowInvalid = TRUE,copyable = TRUE, renderer = renderer_trait[[i]]) 
    }
- k <- nt+1
- out_temp[[k]]
+  k <- nt+1
+  out_temp[[k]]
   }
 })
   
