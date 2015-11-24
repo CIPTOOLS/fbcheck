@@ -18,21 +18,14 @@ ui = dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(tabName = "table",
-              #fluidRow(box(rHandsontableOutput("hot",width = 2000, height = 400),width = 2000,height = 500,collapsible = TRUE))
+       
               fluidRow(rHandsontableOutput("hot",width = 1000, height = 800),width = 2000,height = 500,collapsible = TRUE)
-              #fluidRow(rHandsontableOutput("hot",width = 2000, height = 400))
-              #fluidRow(box(rHandsontableOutput("hot3")))
+       
       ),
       tabItem(tabName = "summary",
-              #fluidRow(box(rHandsontableOutput("hot",width = 2000, height = 400),width = 2000,height = 500,collapsible = TRUE))
-              fluidRow(rHandsontableOutput("hot_summary",width = 1000, height = 800),width = 2000,height = 500,collapsible = TRUE)
-              #fluidRow(rHandsontableOutput("hot",width = 2000, height = 400))
-              #fluidRow(box(rHandsontableOutput("hot3")))
+               fluidRow(rHandsontableOutput("hot_summary",width = 1000, height = 800),width = 2000,height = 500,collapsible = TRUE)
+       
       )
-      
-      
-      
-      
     )
   )
 )
@@ -62,7 +55,7 @@ server = function(input, output) {
   })
   
   output$hot = renderRHandsontable ({
-    #rhandsontable(do.call(cbind, lapply(1:20, function(i) data.table(rnorm(10000)))))
+  
     source("main_functions.R")
     
     fieldbook_dashboard <- as.data.frame(fieldbook())
@@ -78,7 +71,6 @@ server = function(input, output) {
     fb_header <- names(fieldbook_dashboard)
     fb_trait <- intersect(dict_trait,fb_header)
     nt <- length(fb_trait)
-    
     out_temp <- list() 
     renderer_trait <-  list()
   
