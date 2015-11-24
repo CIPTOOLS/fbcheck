@@ -66,144 +66,32 @@ server = function(input, output) {
     fieldbook_dashboard <- as.data.frame(fieldbook())
     fieldbook_dashboard$PLOT <- as.integer(fieldbook_dashboard$PLOT)
     fieldbook_dashboard$REP <- as.integer(fieldbook_dashboard$REP)
- 
-   renderer_NTP <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <1  ) {
-    td.style.background = 'pink';
-    } else if (value >100) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_Plant_Vigor <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments);
-    if (value!=1 && value!= 3 && value!=1 && value!= 5 && value!=1 && value!= 7 && value!=1 && value!= 9  ) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_SE <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments);
-    if (value!=1 && value!= 3 && value!=1 && value!= 5 && value!=1 && value!= 7 && value!=1 && value!= 9  ) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_NPH <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <0  ) {
-    td.style.background = 'pink';
-    } else if (value >100) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_PPH <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <0  ) {
-    td.style.background = 'pink';
-    } else if (value >100) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_NMTP <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <0  ) {
-    td.style.background = 'pink';
-    } else if (value >1000) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_MTWP <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <0  ) {
-    td.style.background = 'pink';
-    } else if (value >1000) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_MTWPL <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <0  ) {
-    td.style.background = 'pink';
-    } else if (value >1000) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_MTYA <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <0  ) {
-    td.style.background = 'pink';
-    } else if (value >100) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_MTYNA <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <0  ) {
-    td.style.background = 'pink';
-    } else if (value >100) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_Tuber_Apper <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments);
-    if (value!=1 && value!= 3 && value!=1 && value!= 5 && value!=1 && value!= 7 && value!=1 && value!= 9  ) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_ATMW <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <0  ) {
-    td.style.background = 'pink';
-    } else if (value >2000) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_AVDM <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments); 
-    if (value <0  ) {
-    td.style.background = 'pink';
-    } else if (value >100) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  renderer_Chip_Color <-  " function (instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.renderers.TextRenderer.apply(this, arguments);
-    if (value!=1 && value!= 2 && value!=1 && value!= 3 && value!=1 && value!= 4 && value!=1 && value!= 5  ) {
-    td.style.background = 'pink';
-    } 
-  } " 
-  
+
+    datadict <- readxl::read_excel(path=fp,sheet="Template for submission",skip=5)
+    dict_trait <- datadict$ABBR  
     
-    rhandsontable::rhandsontable(data = fieldbook_dashboard,readOnly = FALSE,useTypes = TRUE) %>%  
-      hot_col(col = 'NTP' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_NTP) %>% 
-      hot_col(col = 'Plant_Vigor' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_Plant_Vigor) %>% 
-      hot_col(col = 'SE' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_SE) %>% 
-      hot_col(col = 'NPH' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_NPH) %>% 
-      hot_col(col = 'PPH' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_PPH) %>% 
-      hot_col(col = 'NMTP' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_NMTP) %>% 
-      hot_col(col = 'MTWP' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_MTWP) %>% 
-      hot_col(col = 'MTWPL' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_MTWPL) %>% 
-      hot_col(col = 'MTYA' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_MTYA) %>% 
-      hot_col(col = 'MTYNA' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_MTYNA) %>% 
-      hot_col(col = 'Tuber_Apper' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_Tuber_Apper) %>% 
-      hot_col(col = 'ATMW' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_ATMW) %>% 
-      hot_col(col = 'AVDM' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_AVDM) %>% 
-      hot_col(col = 'Chip_Color' ,readOnly = FALSE,
-              allowInvalid = TRUE,copyable = TRUE, renderer =renderer_Chip_Color)
+    fb_header <- names(fieldbook_dashboard)
+    fb_trait <- intersect(dict_trait,fb_header)
+    nt <- length(fb_trait)
+    
+    out_temp <- list() 
+    renderer_trait <-  list()
     
     
+  for(i in 1:nt){
+      
+    print(i)
+  out_temp[[1]]<- rhandsontable::rhandsontable(data = fieldbook_dashboard,readOnly = FALSE,useTypes = TRUE) #%>%  
+  renderer_trait[[i]] <- render_trait(fb_trait[i],datadict)
+      
+  j <- i+1
+  #print(j)
+  out_temp[[j]] <- hot_col(hot = out_temp[[i]],col = fb_trait[i] ,readOnly = FALSE,
+                               allowInvalid = TRUE,copyable = TRUE, renderer = renderer_trait[[i]])
+      
+  }
+  k <- nt+1
+  out_temp[[k]]
     
 })
   

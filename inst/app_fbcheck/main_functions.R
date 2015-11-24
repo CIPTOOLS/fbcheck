@@ -67,69 +67,44 @@ render_categorical <- function(scale_condition){
   return(out)
   } 
 
-# datadict <- readxl::read_excel(path=fp,sheet="Template for submission",skip=5)
-# trait <- datadict$ABBR  
-# 
-# fb_trait <- names(fieldbook)
-# trait <- intersect(trait,fb_trait)
-# 
-# nt <- length(trait)
-# 
-# sink("render_trait_validation.R")
-# for(i in 1:nt){
-#   # for(i in 1:1){  
-#   tp <- trait_type(trait[i],datadict)  
-#   scale_trait_values <- scale_trait(trait = trait[i],datadict = datadict)
-#   
-#   if(tp == "Continuous"|| tp == "Discrete"){
-#     
-#     ul <- scale_trait_values$ul  
-#     ll <- scale_trait_values$ll 
-#     
-#     #render_quantitative(ll=ll,ul=ul)
-#     assign_trait <- paste("renderer_",trait[i]," <- ",sep="") 
-#     render_trait <- render_quantitative(ll=ll,ul=ul)
-#     render_trait_rule <- paste(assign_trait,"\"",render_trait,"\"")
-#     cat(render_trait_rule,"\n"," ")
-#     
-#     
-#   }
-#   if(tp =="Categorical"){
-#     
-#     categorical_scale <- scale_trait_values$cat_scale
-#     n <- length(categorical_scale)
-#     scale_rule_first <- paste("value!=",categorical_scale[1], sep = "") #1st class of categorical trait
-#     scale_rule_global <- paste(scale_rule_first,"&&","value!=",categorical_scale[2:n]) %>%  paste(. ,collapse = " && ")
-#     
-#     #scale_rule_global <- paste(scale_rule_global,collapse = " && ")
-#     #render_categorical(scale_condition = scale_rule_global)
-#     assign_trait <- paste("renderer_",trait[i]," <- ",sep="") 
-#     render_trait <- render_categorical(scale_condition = scale_rule_global)
-#     render_trait_rule <- paste(assign_trait,"\"",render_trait,"\"")
-#     cat(render_trait_rule,"\n"," ")
-#   }  
-#   if(tp=="none"){
-#     print("")
-#   }      
-#   
-# }
-# sink()
-# 
-# 
-# sink("render_trait_hotcol.R")
-# cat( "rhandsontable::rhandsontable(data = fieldbook,readOnly = FALSE,useTypes = TRUE) %>% ","\n")
-# for(i in 1:nt){
-#   
-#   if(i!=nt){    
-#     cat(paste("hot_col(col = '",trait[i],"' ,readOnly = FALSE,
-#               allowInvalid = TRUE,copyable = TRUE, renderer =",paste("renderer_",trait[i],
-#                                                                      sep="",")")," %>% ","\n" ,sep=""))
-#   } 
-#   if(i==nt){
-#     cat(paste("hot_col(col = '",trait[i],"' ,readOnly = FALSE,
-#               allowInvalid = TRUE,copyable = TRUE, renderer =",paste("renderer_",trait[i],
-#                                                                      sep="",")"),"\n" ,sep=""))
-#   }
-#   
-# }
-# sink()
+render_trait<- function(trait,datadict){
+
+  tp <- trait_type(trait,datadict)  
+  scale_trait_values <- scale_trait(trait = trait,datadict = datadict)
+  
+  if(tp == "Continuous"|| tp == "Discrete"){
+    
+    ul <- scale_trait_values$ul  
+    ll <- scale_trait_values$ll 
+    
+    #assign_trait <- paste("renderer_",trait," <- ",sep="") 
+    render_trait <- render_quantitative(ll=ll,ul=ul)
+    #render_trait_rule <- paste(assign_trait,"\"",render_trait,"\"")
+    #cat("\"",render_trait,"\"","\n"," ")
+    #out <- paste("\"",render_trait,"\"","\n"," ")
+    out <- paste(render_trait)
+    
+  }
+  
+  if(tp =="Categorical"){
+    
+    categorical_scale <- scale_trait_values$cat_scale
+    n <- length(categorical_scale)
+    scale_rule_first <- paste("value!=",categorical_scale[1], sep = "") #1st class of categorical trait
+    scale_rule_global <- paste(scale_rule_first,"&&","value!=",categorical_scale[2:n]) %>%  paste(. ,collapse = " && ")
+    
+    #assign_trait <- paste("renderer_",trait," <- ",sep="") 
+    render_trait <- render_categorical(scale_condition = scale_rule_global)
+    #render_trait_rule <- paste(assign_trait,"\"",render_trait,"\"")
+    #cat("\"",render_trait,"\"","\n"," ")
+    out <- paste(render_trait)
+  }
+  
+  if(tp=="none"){
+    print("")
+  }      
+  
+  return(out)
+}
+  
+  
