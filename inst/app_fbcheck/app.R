@@ -63,10 +63,15 @@ server = function(input, output) {
   
   output$hot = renderRHandsontable ({
     #rhandsontable(do.call(cbind, lapply(1:20, function(i) data.table(rnorm(10000)))))
+    source("main_functions.R")
+    
     fieldbook_dashboard <- as.data.frame(fieldbook())
     fieldbook_dashboard$PLOT <- as.integer(fieldbook_dashboard$PLOT)
     fieldbook_dashboard$REP <- as.integer(fieldbook_dashboard$REP)
-
+    
+    fp <-  "C:\\OMAR-2015\\hidap\\inst\\hidap\\ontologies\\ontologies_potato.xlsx"
+    #fp_fb <-"C:\\OMAR-2015\\hidap\\inst\\hidap\\data\\potato\\200211\\PTYL200211_CHIARA.xlsx"
+    
     datadict <- readxl::read_excel(path=fp,sheet="Template for submission",skip=5)
     dict_trait <- datadict$ABBR  
     
@@ -76,33 +81,24 @@ server = function(input, output) {
     
     out_temp <- list() 
     renderer_trait <-  list()
-    
-    
+  
+  fb_file <- input$upload_fieldbook  
+  if(is.null(fb_file)){return()}
+  if(!is.null(fb_file)){
+      
   for(i in 1:nt){
-      
-    print(i)
-  out_temp[[1]]<- rhandsontable::rhandsontable(data = fieldbook_dashboard,readOnly = FALSE,useTypes = TRUE) #%>%  
-  renderer_trait[[i]] <- render_trait(fb_trait[i],datadict)
-      
-  j <- i+1
-  #print(j)
-  out_temp[[j]] <- hot_col(hot = out_temp[[i]],col = fb_trait[i] ,readOnly = FALSE,
-                               allowInvalid = TRUE,copyable = TRUE, renderer = renderer_trait[[i]])
-      
+    out_temp[[1]]<- rhandsontable::rhandsontable(data = fieldbook_dashboard,readOnly = FALSE,useTypes = TRUE) #%>%  
+    renderer_trait[[i]] <- render_trait(fb_trait[i],datadict)
+    j <- i+1
+    #print(j)
+    out_temp[[j]] <- hot_col(hot = out_temp[[i]],col = fb_trait[i] ,readOnly = FALSE,
+                               allowInvalid = TRUE,copyable = TRUE, renderer = renderer_trait[[i]]) 
+   }
+ k <- nt+1
+ out_temp[[k]]
   }
-  k <- nt+1
-  out_temp[[k]]
-    
 })
   
-  output$hot_summary = renderRHandsontable({
-    fieldbook_dashboard <- as.data.frame(fieldbook())
-    
-    
-    
-  }) 
-  
-  
-  }
+}
 
 shinyApp(ui, server)
