@@ -2,7 +2,7 @@ library(shinydashboard)
 library(shiny)
 library(data.table)
 library(rhandsontable)
-
+library(fbcheck)
 ui = dashboardPage(
   dashboardHeader(title = "rhandsontable Example"),
   dashboardSidebar(
