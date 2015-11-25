@@ -1,7 +1,8 @@
 #'Function for trait type
-#'@param trait trait
-#'@param datadict data dictionary
-#'@author omar benites
+#' @param trait trait
+#' @param datadict data dictionary
+#' @author omar benites
+#' @export
 trait_type <- function(trait,datadict)
 {
   tp <- as.character(datadict[datadict$ABBR==trait,c("TYPE")]) 
@@ -19,7 +20,7 @@ trait_type <- function(trait,datadict)
 #'@param datadict data dictionary
 #'@author omar benites
 #'@description Function to get the scale of differents trait, 
-
+#' @export
 scale_trait <- function(trait,datadict){
   
   tp <- trait_type(trait = trait,datadict = datadict)
@@ -53,6 +54,7 @@ scale_trait <- function(trait,datadict){
 #'@param ul upper limmit
 #'@author omar benites
 #'@description Function to get the scale of differents trait, 
+#' @export
 
 render_quantitative <- function(ll,ul){
   out <- paste("function (instance, td, row, col, prop, value, cellProperties) {
@@ -72,6 +74,7 @@ render_quantitative <- function(ll,ul){
 #'@param scale_condition
 #'@author omar benites
 #'@description Function to get the scale of differents trait, 
+#' @export
 
 render_categorical <- function(scale_condition){ 
   out <- paste("function (instance, td, row, col, prop, value, cellProperties) {
@@ -90,6 +93,7 @@ render_categorical <- function(scale_condition){
 #'@param datadict data dictionary
 #'@author omar benites
 #'@description Function to get the scale of differents trait, 
+#'@export 
 
 render_trait<- function(trait,datadict){
   
@@ -129,5 +133,20 @@ render_trait<- function(trait,datadict){
   }      
   
   return(out)
+}
+
+
+#' Function to obtain parameter from fieldbook 
+#' @description This function gets parameters or values from fieldbook excel file. Do an excel scrapping.
+#' @param fp fieldbook path
+#' @param sheet fieldbook's sheet
+#' @param param Parameters
+#' @export 
+get.fb.param <-function(fp,sheet,param){
+  params <- readxl::read_excel(path = fp, sheet = sheet)
+  params <- as.data.frame(params)
+  lapply(x <- 1:ncol(params), function(x)  params[,x]<-as.character(params[,x]))
+  #for(i in 1:ncol(params)) params[,i]<-as.character(params[,i])
+  params[params$Factor==param,2]
 }
 

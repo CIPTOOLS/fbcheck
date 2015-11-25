@@ -1,7 +1,7 @@
-fp <-  "C:\\OMAR-2015\\hidap\\inst\\hidap\\ontologies\\ontologies_potato.xlsx"
-fp_fb <-"C:\\OMAR-2015\\hidap\\inst\\hidap\\data\\potato\\200211\\PTYL200211_CHIARA.xlsx"
-fieldbook <- readxl::read_excel(fp_fb,"Fieldbook")  
-fieldbook <- as.data.frame(fieldbook)
+# fp <-  "C:\\OMAR-2015\\hidap\\inst\\hidap\\ontologies\\ontologies_potato.xlsx"
+# fp_fb <-"C:\\OMAR-2015\\hidap\\inst\\hidap\\data\\potato\\200211\\PTYL200211_CHIARA.xlsx"
+# fieldbook <- readxl::read_excel(fp_fb,"Fieldbook")  
+# fieldbook <- as.data.frame(fieldbook)
 
 trait_type <- function(trait,datadict)
 {

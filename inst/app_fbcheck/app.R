@@ -7,10 +7,10 @@ ui = dashboardPage(
   dashboardHeader(title = "rhandsontable Example"),
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Table", tabName = "table", icon = icon("dashboard")),
+      menuItem("Fieldbook Check", tabName = "table", icon = icon("dashboard")),
       menuItem(text = "Data Quality", shiny::fileInput(inputId = "upload_fieldbook",accept = ".xlsx",
-                                                       label = "Upload Fieldbook"), icon = icon("check-circle"),
-               menuSubItem(text = "Checking Fieldbook",tabName = "checking_fieldbook")
+                                                       label = "Upload Fieldbook"), icon = icon("check-circle")
+               #menuSubItem(text = "Checking Fieldbook",tabName = "checking_fieldbook")
       )
       
     )
@@ -19,7 +19,10 @@ ui = dashboardPage(
     tabItems(
       tabItem(tabName = "table",
        
-              fluidRow(rHandsontableOutput("hot",width = 1000, height = 800),width = 2000,height = 500,collapsible = TRUE)
+              fluidRow(
+                shinydashboard::box(
+                rHandsontableOutput("hot",width = 1000, height = 800),width = 2000,height = 500,collapsible = TRUE)
+                )
        
       ),
       tabItem(tabName = "summary",
@@ -50,24 +53,46 @@ server = function(input, output) {
     
     fieldbook <-  sbformula::sbcalculate(fb = fieldbook, plot.size = plot_size,plant.den = plant_den)   
     print(fieldbook)
+    
     fieldbook
     #}   
   })
   
+  crop <- reactive({
+    fb_file <- input$upload_fieldbook
+    if(is.null(fb_file)){return()}
+    file.copy(fb_file$datapath, paste(fb_file$datapath, ".xlsx", sep=""))
+    crop <- get.fb.param(paste(fb_file$datapath, ".xlsx", sep=""),sheet = "Minimal","Crop")
+    crop <- as.character(crop)
+    crop
+    
+  })
+  
+  
   output$hot = renderRHandsontable ({
   
-    source("main_functions.R")
-    
     fieldbook_dashboard <- as.data.frame(fieldbook())
     fieldbook_dashboard$PLOT <- as.integer(fieldbook_dashboard$PLOT)
     fieldbook_dashboard$REP <- as.integer(fieldbook_dashboard$REP)
     
-    fp <-  "C:\\OMAR-2015\\hidap\\inst\\hidap\\ontologies\\ontologies_potato.xlsx"
-    #fp_fb <-"C:\\OMAR-2015\\hidap\\inst\\hidap\\data\\potato\\200211\\PTYL200211_CHIARA.xlsx"
+    crop_fieldbook <- as.character(crop())
+    if(length(crop_fieldbook)==0){return()}
+  
+    if(length(crop_fieldbook)>0){
+          
+        if(crop_fieldbook=="potato"){
+          load("table_dictionary_potato.rda")
+          datadict <- potato_ontology
+        }
+        
+        if(crop_fieldbook=="sweetpotato"){
+          load("table_dictionary_sweetpotato.rda")
+          datadict <- sweetpotato_ontology
+        }
     
-    datadict <- readxl::read_excel(path=fp,sheet="Template for submission",skip=5)
+    }  
+    
     dict_trait <- datadict$ABBR  
-    
     fb_header <- names(fieldbook_dashboard)
     fb_trait <- intersect(dict_trait,fb_header)
     nt <- length(fb_trait)
@@ -87,8 +112,25 @@ server = function(input, output) {
                                allowInvalid = TRUE,copyable = TRUE, renderer = renderer_trait[[i]]) 
    }
   k <- nt+1
-  out_temp[[k]]
+  out_temp[[k]] %>%
+    hot_context_menu(
+      customOpts = list(
+        csv = list(name = "Download to CSV",
+                   callback = htmlwidgets::JS(
+                     "function (key, options) {
+                     var csv = csvString(this);
+                     var link = document.createElement('a');
+                     link.setAttribute('href', 'data:text/plain;charset=utf-8,' +
+                     encodeURIComponent(csv));
+                     link.setAttribute('download', 'data.csv');
+                     document.body.appendChild(link);
+                     link.click();
+                     document.body.removeChild(link);
+  }"))))
+  
+  
   }
+  
 })
   
 }
