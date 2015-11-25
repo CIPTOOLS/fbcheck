@@ -14,8 +14,10 @@ trait_type <- function(trait,datadict)
   return(tp)
 }
 
+
 #'@description Function to get the scale of differents trait, 
 #'dependig if Its continous/discrete/categorical variable
+#'
 scale_trait <- function(trait,datadict){
   
   tp <- trait_type(trait = trait,datadict = datadict)
