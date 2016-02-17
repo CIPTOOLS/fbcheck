@@ -1,8 +1,25 @@
 Package: fbcheck
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends: R (>= 3.2.2)
-License: What license is it under?
+Title: Web Interface for Data Quality and Processing
+Version: 1.0
+Authors@R: c(
+        person("Omar","Benites",,"obacc07@gmail.com",c("aut","cre"))
+        )
+Maintainer: Omar Benites <obacc07@gmail.com>
+Description: fbcheck is a package which containt a user interface for data quality and processing.
+Depends:
+    R (>= 3.2.2)
+Imports:
+    stringr,
+    magrittr,
+    openxlsx,
+    readxl,
+    tools,
+    rhandsontable,
+    doBy,
+    shiny,
+    traittools,
+    sbformula,
+    date
+License: MIT + file LICENCE
 LazyData: true
+RoxygenNote: 5.0.1
