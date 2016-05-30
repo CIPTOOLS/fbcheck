@@ -15,6 +15,8 @@ fbcheck_server <- function(input, output, session, values) {
 
   hot_path <- reactive ({
     
+    if(is.null(input$file)){return(NULL)}
+    
     validate(
       need(input$file != "", label = "Please enter an XLSX file. XLS files are forbidden")
     )
@@ -27,8 +29,10 @@ fbcheck_server <- function(input, output, session, values) {
   
   hot_bdata <- reactive({
     hot_file <- hot_path()
+    print(hot_file)
     if(length(hot_file)==0){return (NULL)}
     if(length(hot_file)>0){
+      
       hot_bdata <- readxl::read_excel(path=hot_file , sheet = "Fieldbook")
     }
   })
@@ -37,10 +41,22 @@ fbcheck_server <- function(input, output, session, values) {
     hot_file <- hot_path()
     if(length(hot_file)==0){return (NULL)}
     if(length(hot_file)>0){
+      
       hot_param <- readxl::read_excel(path=hot_file , sheet = "Installation")
-      hot_design <- get_fb_param(hot_param,"Experimental design")
-      hot_plot_size <- get_fb_param(hot_param,"Plot size (m2)")
-      hot_plant_den <- get_fb_param(hot_param,"Planting density (plants/Ha)")
+      #hot_design <- get_fb_param(hot_param,"Experimental design")
+      #hot_design <- get_fb_param(hot_param,"Experimental_design")
+      hot_design <- get_fb_param(hot_param,"Experimental_design_abbreviation")
+      
+      
+      #hot_design <- get_fb_param(hot_param,"Experimental design")
+      hot_design <- get_fb_param(hot_param,"Experimental_design")
+      
+      #hot_plot_size <- get_fb_param(hot_param,"Plot size (m2)")
+      hot_plot_size <- get_fb_param(hot_param,"Plot_size_(m2)")
+      
+      #hot_plant_den <- get_fb_param(hot_param,"Planting density (plants/Ha)")
+      hot_plant_den <- get_fb_param(hot_param,"Planting_density_(plants/Ha)")
+      
       hot_params_list <- list(hot_design = hot_design, hot_plot_size = hot_plot_size,
                               hot_plant_den =  hot_plant_den)
     }
@@ -60,7 +76,9 @@ fbcheck_server <- function(input, output, session, values) {
     if(length(hot_file)==0){return (NULL)}
     if(length(hot_file)>0){
       hot_param <- readxl::read_excel(path=hot_file , sheet = "Minimal")
-      hot_crop <- get_fb_param(hot_param,"Type of Trial")
+      #hot_crop <- get_fb_param(hot_param,"Type of Trial") #in DataCollector
+      hot_trial <- get_fb_param(hot_param,"Type_of_Trial") #in HiDAP
+      
     }
   })
   
@@ -81,7 +99,8 @@ fbcheck_server <- function(input, output, session, values) {
     if(length(hot_file)==0){return (NULL)}
     if(length(hot_file)>0){
       #hot_mtl <- reactive_excel_metadata(file_id =hot_file , "Material List")
-      hot_mtl <- openxlsx::read.xlsx(xlsxFile= hot_file, sheet = "Material List", detectDates = TRUE)
+      #hot_mtl <- openxlsx::read.xlsx(xlsxFile= hot_file, sheet = "Material List", detectDates = TRUE)
+      hot_mtl <- openxlsx::read.xlsx(xlsxFile= hot_file, sheet = "Material_List", detectDates = TRUE)
       hot_mtl
       #print(hot_mtl)
     }
@@ -119,8 +138,9 @@ fbcheck_server <- function(input, output, session, values) {
       
       traits <- get_trait_fb(DF)
       saveRDS(DF,"hot_fieldbook.rds")
-       crop <- hot_crop()
+      crop <- hot_crop()
       trial <- hot_trial()
+      print(DF)
       trait_dict <- get_crop_ontology(crop = crop,trial = trial)
       traittools::col_render_trait(fieldbook = DF,trait = traits ,trait_dict = trait_dict)
       
@@ -129,12 +149,12 @@ fbcheck_server <- function(input, output, session, values) {
     
   })
   
-  output$hot_td_trait = renderRHandsontable({ 
-    td_trait <- orderBy(~ABBR, td_trait)
-    rhandsontable(data = td_trait)
-  })
+#   output$hot_td_trait = renderRHandsontable({ 
+#     td_trait <- orderBy(~ABBR, td_trait)
+#     rhandsontable(data = td_trait)
+#   })
   
-  shiny::observeEvent(input$exportButton, function(){
+  shiny::observeEvent(input$exportButton,{
     
     withProgress(message = "Downloading Fieldbook and Applying Format...",value= 0,
                  {
@@ -142,7 +162,8 @@ fbcheck_server <- function(input, output, session, values) {
                    trait <- get_trait_fb(DF)
                    crop <- hot_crop()
                    trial <- hot_trial()
-                    trait_dict <- td_crop
+                   trait_dict <- td_crop
+                    #print("DF")
 
                    hot_design <- as.character(hot_params()$hot_design)
                    

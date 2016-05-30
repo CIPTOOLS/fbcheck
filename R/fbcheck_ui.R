@@ -1,7 +1,7 @@
 #' UI for traittools
 #' Returns user friendly ui
 #' @author Omar Benites
-#' @param type of UI element, deault is a tab in a shinydashboard
+#' @param type type of UI element, deault is a tab in a shinydashboard
 #' @param title diaply title name
 #' @param name UI TabName
 #' @export
@@ -12,16 +12,19 @@ fbcheck_ui <- function(type="tab", title="Data Quality and Processing", name="da
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
                           
-                          tabsetPanel(
+                          box(
+                            title = "Data Quality", status = "primary", solidHeader = TRUE,
+                            collapsible = TRUE, width = NULL,
+                          #tabsetPanel(
+                          tabBox(width = 12,
                             tabPanel("Check", #begin tabset "CHECK"
                                      fluidRow(
-                                       
-                                       shinyFilesButton('file', 'File select', 'Please select a file',FALSE),
-                                       actionButton("calculate", "Calculate",icon("play-circle-o")),
+                                       shinyFiles::shinyFilesButton('file', 'File select', 'Please select a file',FALSE),
+                                       shiny::actionButton("calculate", "Calculate",icon("play-circle-o")),
                                        HTML('<div style="float: right; margin: 0 5px 5px 10px;">'),
-                                       actionLink('exportButton', 'Download data'),
+                                       shiny::actionLink('exportButton', 'Download data'),
                                        HTML('</div>'),
-                                       box(rHandsontableOutput("hot_btable",height = "1400px",width = "1400px"),
+                                       box(rHandsontableOutput("hot_btable",height = "1400px",width = "1000px"),
                                            height = "3400px",width ="2400px")
                                      ),
                                      
@@ -30,16 +33,21 @@ fbcheck_ui <- function(type="tab", title="Data Quality and Processing", name="da
                                      tags$style(type='text/css', "#calculate { width:150px; margin-top: 25px;}"),
                                      tags$style(HTML('#calculate {background-color:#21b073; color: #ffffff}'))
                                      
-                            ),#end tab Panel "CHECK"
+                            )#,#end tab Panel "CHECK"
                             
-                            tabPanel("Trait List", #begin Trait List Panel"
-                                     fluidRow(
-                                       box(rHandsontableOutput("hot_td_trait",height = "1400px",width = "1400px"),
-                                           height = "3400px",width ="2400px")
-                                       
-                                     )#end fluidRow
-                            )
+#                             tabPanel("Trait List", #begin Trait List Panel"
+#                                      fluidRow(
+#                                        box(rHandsontableOutput("hot_td_trait",height = "1400px",width = "1400px"),
+#                                            height = "3400px",width ="2400px")
+#                                      )#end fluidRow
+#                             )
                           )
+                          ),
+                        br(),
+                        br(),
+                        br()
+
+
   )#End data_processing tabItem
   
 }
