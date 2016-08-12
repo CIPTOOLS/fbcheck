@@ -2,3 +2,9 @@
 
 export(fbcheck_server)
 export(fbcheck_ui)
+export(get.fb.param)
+export(render_categorical)
+export(render_quantitative)
+export(render_trait)
+export(scale_trait)
+export(trait_type)
